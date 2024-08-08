@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using System.Web.Http.Cors;
 
 namespace Api_TrabajoFidelitas
 {
@@ -10,12 +9,9 @@ namespace Api_TrabajoFidelitas
     {
         public static void Register(HttpConfiguration config)
         {
-            // Configuración y servicios de Web API
+            // Web API configuration and services
 
-            // Habilitar CORS
-            config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
-
-            // Rutas de Web API
+            // Web API routes
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(

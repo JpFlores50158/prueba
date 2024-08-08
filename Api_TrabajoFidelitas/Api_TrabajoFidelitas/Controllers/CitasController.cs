@@ -9,11 +9,11 @@ using System.Web.Http;
 
 using System.IO;
 
-using System.Web.Http.Cors;
+
 
 namespace Api_TrabajoFidelitas.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    
     public class CitasController : ApiController
     {
         UtilitariosCorreo modeloCorreo = new UtilitariosCorreo();
