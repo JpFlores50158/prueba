@@ -1,0 +1,69 @@
+﻿@model Web_TrabajoFidelitas.Entidades.Usuario
+
+@{
+    ViewBag.Title = "Actualizar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a class="btn btn-primary m-2 my-4" href="@Url.Action("MostrarUsuarios","Usuario")"><i class="bi bi-arrow-left-circle"></i> Regresar </a>
+<div class="card shadow mb-4">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="card-body" style="margin-top: 20px;">
+                <div class="table-responsive">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+
+                        @if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }
+
+                        @using (Html.BeginForm("ActualizarUsuario", "Usuario", FormMethod.Post, new { @class = "row g-3 needs-validation", novalidate = "novalidate" }))
+                        {
+                            @Html.HiddenFor(m => m.idUsuario)
+                            <div class="form-group my-3">
+                                @Html.Label("Nombre del Usuario")
+                                @Html.TextBoxFor(m => m.nombreUsuario, new { @class = "form-control", @placeholder = "Nombre", @required = "true", @type = "text", @maxlength = "100" })
+                                @Html.ValidationMessageFor(m => m.nombreUsuario, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Por favor, escriba el nombre del usuario</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Email del Usuario")
+                                @Html.TextBoxFor(m => m.emailUsuario, new { @class = "form-control", @placeholder = "Email", @required = "true", @type = "email", @maxlength = "255" })
+                                @Html.ValidationMessageFor(m => m.emailUsuario, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Por favor, escriba el email del usuario</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Contraseña del Usuario")
+                                @Html.TextBoxFor(m => m.contrasenaUsuario, new { @class = "form-control", @placeholder = "Contraseña", @required = "true", @maxlength = "255" })
+                                @Html.ValidationMessageFor(m => m.contrasenaUsuario, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Por favor, escriba la contraseña del usuario</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Roles")
+                                @Html.DropDownListFor(m => m.idRol, ViewBag.Roles as List<SelectListItem>, new { @class = "form-control form-control-user", @required = "true" })
+                                @Html.ValidationMessageFor(m => m.idRol, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Por favor, seleccione un rol respectivo</div>
+                            </div>
+                            <div class="form-group my-3">
+                                @Html.Label("Estado")
+
+                                @Html.DropDownListFor(m => m.estado, new SelectList(new[] { new SelectListItem { Text = "Seleccione....", Value = "null" }, new SelectListItem { Text = "Inactiva", Value = "false" }, new SelectListItem { Text = "Activo", Value = "true" } }, "Value", "Text"), new { @class = "form-control" })
+                            </div>
+
+                            <div style="display: flex; align-items: center; flex-direction: column;">
+                                <input type="submit" class="btn btn-primary btn-block" value="Actualizar Usuario" style="margin-top: 20px; margin-bottom: 20px;">
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

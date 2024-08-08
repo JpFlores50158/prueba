@@ -1,0 +1,111 @@
+﻿@model Web_TrabajoFidelitas.Entidades.Citas
+
+@{
+    ViewBag.Title = "EditarCita";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a class="btn btn-primary m-2 my-4" href="@Url.Action("MostrarCitas", "Cita")"><i class="bi bi-arrow-left-circle"></i> Regresar </a>
+<div class="card shadow mb-4">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="card-body" style="margin-top: 20px;">
+                <div class="table-responsive">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                        <h3>Editar Cita</h3>
+                        <hr />
+                        @if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }
+
+                        @using (Html.BeginForm("EditarCita", "Cita", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(m => m.idCita)
+
+                            <div class="form-group my-3">
+                                @Html.Label("Id Automovil")
+                                @Html.DropDownListFor(m => m.idAutomovil, ViewBag.Automoviles as List<SelectListItem>, new { @class = "form-control", @id = "automovilSelect", @required = "true" })
+                                @Html.ValidationMessageFor(m => m.idAutomovil, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("ID Ciudad Sucursal")
+                                @Html.DropDownListFor(m => m.idSucursal, ViewBag.Sucursales as List<SelectListItem>, new { @class = "form-control", @id = "sucursalSelect", @required = "true" })
+                                @Html.ValidationMessageFor(m => m.idSucursal, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("ID Servicio")
+                                @Html.DropDownListFor(m => m.idServicio, ViewBag.Servicios as List<SelectListItem>, new { @class = "form-control", @id = "servicioSelect", @required = "true" })
+                                @Html.ValidationMessageFor(m => m.idServicio, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Fecha")
+                                @Html.TextBoxFor(m => m.fechaHora, new { @class = "form-control", @placeholder = "Fecha", @required = "true", @min = "2024-01-01T07:00", @max = "2024-12-31T17:00", @step = "1800" })
+                                @Html.ValidationMessageFor(m => m.fechaHora, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Comentarios")
+                                @Html.TextBoxFor(m => m.comentarios, new { @class = "form-control", @placeholder = "Comentarios", @required = "true" })
+                                @Html.ValidationMessageFor(m => m.comentarios, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Estado")
+                                @Html.DropDownListFor(m => m.estado, new SelectList(new[] {
+                                    new SelectListItem { Text = "Seleccione....", Value = "null" },
+                                    new SelectListItem { Text = "Cancelada", Value = "false" },
+                                    new SelectListItem { Text = "Activo", Value = "true" }
+                                }, "Value", "Text"), new { @class = "form-control", @id = "estadoSelect" })
+                            </div>
+
+                            <div style="display: flex; align-items: center; flex-direction: column;">
+                                <input type="submit" class="btn btn-primary btn-block" value="Actualizar Sucursal" style="margin-top: 20px; margin-bottom: 20px;">
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Incluir Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<!-- Incluir Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- Tu código JavaScript -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#automovilSelect').select2({
+            placeholder: "Seleccione un automóvil",
+            allowClear: true
+        });
+
+        $('#sucursalSelect').select2({
+            placeholder: "Seleccione una sucursal",
+            allowClear: true
+        });
+
+        $('#servicioSelect').select2({
+            placeholder: "Seleccione un servicio",
+            allowClear: true
+        });
+
+        $('#estadoSelect').select2({
+            placeholder: "Seleccione el estado",
+            allowClear: true
+        });
+    });
+</script>

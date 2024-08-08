@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Calendario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/locales-all.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.css" rel="stylesheet" />
+
+<a class="btn btn-primary m-2 my-4" href="@Url.Action("MostrarCitas","Cita")"><i class="bi bi-arrow-left-circle"></i> Regresar </a>
+<div class="container">
+    <div class="card py-4">
+        <div class="card-body py-4">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap modal para mostrar la descripción -->
+<div class="modal fade" id="eventoModal" tabindex="-1" role="dialog" aria-labelledby="eventoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventoModalLabel">Detalles de la cita</h5>
+            </div>
+            <div class="modal-body">
+                <p id="eventoDescripcion"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var idSucursal = @Html.Raw(Json.Encode(ViewBag.IdSucursal));
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'es',
+            initialView: 'dayGridMonth',
+            events: function (fetchInfo, successCallback, failureCallback) {
+                var start = fetchInfo.startStr;
+                var end = fetchInfo.endStr;
+
+                $.ajax({
+                    url: '@Url.Action("ObtenerEventos", "Cita")',
+                    dataType: 'json',
+                    data: {
+                        start: start,
+                        end: end,
+                        idSucursal: idSucursal
+                    },
+                    success: function (response) {
+                        var eventosFiltrados = response.filter(function(evento) {
+                            return evento.estado !== 0;
+                        });
+
+                        successCallback(eventosFiltrados);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching events:', error);
+                        failureCallback(error);
+                    }
+                });
+            },
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            businessHours: {
+                startTime: '07:00', // hora de inicio
+                endTime: '17:00', // hora de fin
+                daysOfWeek: [1, 2, 3, 4, 5, 6] // Lunes a Sábado
+            },
+            slotMinTime: '07:00:00',
+            slotMaxTime: '17:00:00',
+            eventClick: function (info) {
+                $('#eventoModal').modal('show');
+                $('#eventoDescripcion').html(info.event.extendedProps.description); // Usar .html() para interpretar HTML
+            },
+            eventColor: 'blue' // Color de los eventos
+        });
+
+        calendar.render();
+    });
+</script>

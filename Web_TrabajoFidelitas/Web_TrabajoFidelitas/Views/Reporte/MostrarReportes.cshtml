@@ -1,0 +1,448 @@
+﻿@model List<Web_TrabajoFidelitas.Entidades.Citas>
+<section class="section dashboard">
+    <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-12">
+            <div class="row">
+
+                <!-- Sales Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card sales-card">
+
+
+
+                        <div class="card-body">
+                            <h5 class="card-title">Citas </h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6> @ViewBag.CantCitas</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Sales Card -->
+                <!-- Revenue Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card revenue-card">
+
+
+                        <div class="card-body">
+                            <h5 class="card-title">Carros</h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="ri ri-car-fill"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.CantAutos</h6>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Revenue Card -->
+                <!-- Customers Card -->
+                <div class="col-xxl-4 col-xl-12">
+
+                    <div class="card info-card customers-card">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Clientes </h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.CantClientes</h6>
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Citas del Año <span id="filter-label"></span></h5>
+
+                            <!-- Line Chart -->
+                            <div id="reportsChart"></div>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    // Function to fetch data from API and render chart
+                                    const fetchDataAndRenderChart = (fechaInicio, fechaFin) => {
+                                        fetch(`https://localhost:44305/Citas/CitasPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.Codigo === 0) {
+                                                    const fechas = data.Datos.map(item => item.Fecha);
+                                                    const cantidadCitas = data.Datos.map(item => Math.round(item.CantidadCitas)); // Redondear a entero
+
+                                                    // Render chart
+                                                    new ApexCharts(document.querySelector("#reportsChart"), {
+                                                        series: [{
+                                                            name: 'Citas',
+                                                            data: cantidadCitas
+                                                        }],
+                                                        chart: {
+                                                            height: 350,
+                                                            type: 'line',
+                                                            toolbar: {
+                                                                show: false
+                                                            },
+                                                        },
+                                                        markers: {
+                                                            size: 4
+                                                        },
+                                                        colors: ['#4154f1'],
+                                                        fill: {
+                                                            type: "gradient",
+                                                            gradient: {
+                                                                shadeIntensity: 1,
+                                                                opacityFrom: 0.3,
+                                                                opacityTo: 0.4,
+                                                                stops: [0, 90, 100]
+                                                            }
+                                                        },
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            formatter: function (value) {
+                                                                return Math.round(value); // Redondear a entero en dataLabels
+                                                            }
+                                                        },
+                                                        stroke: {
+                                                            curve: 'smooth',
+                                                            width: 2
+                                                        },
+                                                        xaxis: {
+                                                            type: 'datetime',
+                                                            categories: fechas
+                                                        },
+                                                        yaxis: {
+                                                            labels: {
+                                                                formatter: function (value) {
+                                                                    return Math.round(value); // Redondear a entero en el eje Y
+                                                                }
+                                                            },
+                                                            tickAmount: 6 // Ajusta este número según el rango de tus datos para asegurar ticks enteros
+                                                        },
+                                                        tooltip: {
+                                                            x: {
+                                                                format: 'dd/MM/yy'
+                                                            },
+                                                            y: {
+                                                                formatter: function (value) {
+                                                                    return Math.round(value); // Redondear a entero en tooltip
+                                                                }
+                                                            }
+                                                        }
+                                                    }).render();
+                                                } else {
+                                                    console.error('Error en la respuesta de la API:', data.Detalle);
+                                                }
+                                            })
+                                            .catch(error => console.error('Error al obtener los datos de las citas:', error));
+                                    };
+
+                                    // Initial load (This Year)
+                                    const year = new Date().getFullYear();
+                                    const firstDay = `${year}-01-01`;
+                                    const lastDay = `${year}-12-31`;
+                                    document.getElementById('filter-label').innerText = `/ ${year}`;
+                                    fetchDataAndRenderChart(firstDay, lastDay);
+                                });
+                            </script>
+                            <!-- End Line Chart -->
+
+                        </div>
+                    </div>
+                </div><!-- End Reports -->
+                <!-- Recent Sales -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+
+
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">CITAS DE LA SEMANA </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12">
+
+
+
+
+                                                <table class="table table-bordered" style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th>Nombre cliente</th>
+                                                            <th>Placa</th>
+                                                            <th>Sucursal</th>
+                                                            <th>Tipo Servicio</th>
+                                                            <th>Fecha Hora</th>
+                                                            <th>Comentarios</th>
+                                                            <th>Estado</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model)
+                                                        {
+                                                            <tr>
+                                                                <td>@item.idCita</td>
+                                                                <td>@item.nombreCliente</td>
+                                                                <td>@item.placa</td>
+                                                                <td>@item.nombreSucursal</td>
+                                                                <td>@item.nombreServicio</td>
+                                                                <td>@item.fechaHora</td>
+                                                                <td>@item.comentarios</td>
+
+                                                                @if (item.estado)
+                                                                {
+                                                                    <td style="background-color: #ADFFAA ">Activa</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="background-color: #FFAAAA ">Cancelada</td>
+                                                                }
+
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Recent Sales -->
+
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Citas por Auto</h5>
+
+                        <!-- Bar Chart -->
+                        <canvas id="barChart" style="max-height: 400px;"></canvas>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                // Function to fetch data from API and render chart
+                                const fetchDataAndRenderChart = () => {
+                                    fetch('https://localhost:44305/Citas/CitasPorAuto')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.Codigo === 0) {
+                                                const placas = data.Datos.map(item => item.Placa);
+                                                const cantidadCitas = data.Datos.map(item => item.CantidadCitas);
+
+                                                // Render chart
+                                                new Chart(document.querySelector('#barChart'), {
+                                                    type: 'bar', // Cambia a 'line' si prefieres un gráfico de líneas
+                                                    data: {
+                                                        labels: placas,
+                                                        datasets: [{
+                                                            label: 'Cantidad de Citas',
+                                                            data: cantidadCitas,
+                                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                                            borderWidth: 1
+                                                        }]
+                                                    },
+                                                    options: {
+                                                        responsive: true,
+                                                        scales: {
+                                                            x: {
+                                                                title: {
+                                                                    display: true,
+                                                                    text: 'Placa del Auto'
+                                                                }
+                                                            },
+                                                            y: {
+                                                                title: {
+                                                                    display: true,
+                                                                    text: 'Cantidad de Citas'
+                                                                },
+                                                                beginAtZero: true
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                console.error('Error en la respuesta de la API:', data.Detalle);
+                                            }
+                                        })
+                                        .catch(error => console.error('Error al obtener los datos de las citas:', error));
+                                };
+
+                                // Initial load
+                                fetchDataAndRenderChart();
+                            });
+                        </script>
+                        <!-- End Bar Chart -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Website Traffic -->
+            <div class="card">
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Citas por Sucursales</span></h5>
+
+                    <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            // Function to fetch data from API and render chart
+                            const fetchDataAndRenderChart = () => {
+                                fetch('https://localhost:44305/Citas/CitasPorSucursal')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.Codigo === 0) {
+                                            const sucursales = data.Datos.map(item => item.nombreSucursal);
+                                            const cantidadCitas = data.Datos.map(item => item.cantidadCitas);
+
+                                            // Render chart
+                                            echarts.init(document.querySelector("#trafficChart")).setOption({
+                                                tooltip: {
+                                                    trigger: 'item'
+                                                },
+                                                legend: {
+                                                    top: '5%',
+                                                    left: 'center'
+                                                },
+                                                series: [{
+                                                    name: 'Cantidad de Citas',
+                                                    type: 'pie',
+                                                    radius: ['40%', '70%'],
+                                                    avoidLabelOverlap: false,
+                                                    label: {
+                                                        show: true,
+                                                        position: 'center'
+                                                    },
+                                                    emphasis: {
+                                                        label: {
+                                                            show: true,
+                                                            fontSize: '18',
+                                                            fontWeight: 'bold'
+                                                        }
+                                                    },
+                                                    labelLine: {
+                                                        show: true
+                                                    },
+                                                    data: sucursales.map((sucursal, index) => ({
+                                                        value: cantidadCitas[index],
+                                                        name: sucursal
+                                                    }))
+                                                }]
+                                            });
+                                        } else {
+                                            console.error('Error en la respuesta de la API:', data.Detalle);
+                                        }
+                                    })
+                                    .catch(error => console.error('Error al obtener los datos de las citas:', error));
+                            };
+
+                            // Initial load
+                            fetchDataAndRenderChart();
+                        });
+                    </script>
+
+                </div>
+
+            </div><!-- End Website Traffic -->
+
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Citas por Servicio</h5>
+
+                        <!-- Doughnut Chart -->
+                        <canvas id="doughnutChart" style="max-height: 400px;"></canvas>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                // Function to generate a random color in RGB format
+                                const getRandomColor = () => {
+                                    const r = Math.floor(Math.random() * 256);
+                                    const g = Math.floor(Math.random() * 256);
+                                    const b = Math.floor(Math.random() * 256);
+                                    return `rgb(${r}, ${g}, ${b})`;
+                                };
+
+                                // Function to fetch data from API and render chart
+                                const fetchDataAndRenderChart = () => {
+                                    fetch('https://localhost:44305/Citas/CitasPorServicio')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.Codigo === 0) {
+                                                const servicios = data.Datos.map(item => item.NombreServicio);
+                                                const cantidadCitas = data.Datos.map(item => item.CantidadCitas);
+
+                                                // Generate a random color for each service
+                                                const colores = servicios.map(() => getRandomColor());
+
+                                                // Render chart
+                                                new Chart(document.querySelector('#doughnutChart'), {
+                                                    type: 'doughnut',
+                                                    data: {
+                                                        labels: servicios,
+                                                        datasets: [{
+                                                            label: 'Cantidad de Citas',
+                                                            data: cantidadCitas,
+                                                            backgroundColor: colores,
+                                                            hoverOffset: 4
+                                                        }]
+                                                    }
+                                                });
+                                            } else {
+                                                console.error('Error en la respuesta de la API:', data.Detalle);
+                                            }
+                                        })
+                                        .catch(error => console.error('Error al obtener los datos de las citas:', error));
+                                };
+
+                                // Initial load
+                                fetchDataAndRenderChart();
+                            });
+                        </script>
+                        <!-- End Doughnut Chart -->
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div><!-- End Right side columns -->
+
+    </div>
+</section>

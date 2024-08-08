@@ -1,0 +1,60 @@
+﻿@model Web_TrabajoFidelitas.Entidades.Usuario
+
+@{
+    ViewBag.Title = "Registrar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a class="btn btn-primary m-2 my-4" href="@Url.Action("MostrarUsuarios","Usuario")"><i class="bi bi-arrow-left-circle"></i> Regresar </a>
+<div class="card shadow mb-4">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="card-body" style="margin-top: 20px;">
+                <div class="table-responsive">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+
+                        @if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }
+
+                        @using (Html.BeginForm("RegistrarUsuario", "Usuario", FormMethod.Post, new { @class = "row g-3 needs-validation", novalidate = "novalidate" }))
+                        {
+                            <div class="col-12">
+                                @Html.Label("Nombre de Usuario", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.nombreUsuario, new { @class = "form-control", @id = "yourName", @required = "required", @maxlength = "20" })
+                                <div class="invalid-feedback">Por favor, ingresa tu nombre de usuario</div>
+                            </div>
+
+                            <div class="col-12">
+                                @Html.Label("Correo Electrónico", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.emailUsuario, new { @class = "form-control", @type = "email", @id = "yourEmail", @required = "required", @maxlength = "50" })
+                                <div class="invalid-feedback">Por favor, introduce una dirección de correo electrónico válida</div>
+                            </div>
+
+                            <div class="col-12">
+                                @Html.Label("Contraseña", new { @class = "form-label" })
+                                <div class="input-group has-validation">
+                                   
+                                    @Html.TextBoxFor(m => m.contrasenaUsuario, new { @class = "form-control", @id = "yourPassword", @required = "required", @maxlength = "15", @minlength = "8" })
+                                    <div class="invalid-feedback">Por favor, ingresa una contraseña válida de mínimo 8 y máximo 15 caracteres</div>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div style="display: flex; align-items: center; flex-direction: column;">
+                                <input type="submit" class="btn btn-primary btn-block" value="Registar Usuario" style="margin-top: 20px; margin-bottom: 20px;">
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+﻿@model List<Web_TrabajoFidelitas.Entidades.Sucursal>
+
+@{
+    ViewBag.Title = "ConsultarSucursal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4" style="margin-top: 86px;">
+    <div class="card-header py-3" style="display: flex; justify-content: space-between; align-items: center;">
+        <h6 class="m-0 font-weight-bold text-primary" style="text-transform: uppercase; letter-spacing: 5px; font-size: 26px;">Sucursales</h6>
+        <div>
+            <a class="btn btn-primary" href="@Url.Action("NuevoSucursal","Sucursal")"> + Agregar</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="col-sm-12">
+                    <div class="col-sm-12">
+                        @if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center; margin-top: 20px; margin-bottom: 20px;">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }
+
+                        <table id="myDataTable" class="table table-bordered" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nombre de la Sucursal</th>
+                                    <th>Direccion Sucursal</th>
+                                    <th>Cuidad</th>
+                                    <th>Estado</th>
+                                    @if (Session["RolUsuario"].ToString() == "1")
+                                    {
+                                        <th>Acciones</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.idSucursal</td>
+                                        <td>@item.nombreSucursal</td>
+                                        <td>@item.direccionSucursal</td>
+                                        <td>@item.nombreCiudad</td>
+
+
+                                        @if (item.estado)
+                                        {
+                                            <td>Activo</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Inactivo</td>
+                                        }
+                                        @if (Session["RolUsuario"].ToString() == "1")
+                                        {
+                                            <td>
+                                                <div style="text-align:center">
+                                                    <a href="@Url.Action("ActualizarSucursal", "Sucursal", new { id = @item.idSucursal })" class="btn btn-sm btn-info"><i class="fa fa-pencil-square-o"></i></a>
+                                                    <a href="@Url.Action("InactivarSucursal", "Sucursal", new { id = @item.idSucursal })" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></a>
+                                                </div>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CDN de DataTables -->
+<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myDataTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/es-ES.json',
+            }
+        });
+    });
+</script>

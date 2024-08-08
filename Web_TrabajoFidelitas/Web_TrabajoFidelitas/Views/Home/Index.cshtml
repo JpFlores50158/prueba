@@ -1,0 +1,162 @@
+﻿<div class="pagetitle">
+    <h1>Dashboard</h1>
+
+</div><!-- End Page Title -->
+
+
+@if (Session["RolUsuario"] != null && Session["RolUsuario"].ToString() != "1")
+{
+    <div class="m-3">
+
+        <div class="d-grid gap-2 mt-3">
+            <h3> MODO USUARIO</h3>
+        </div>
+    </div>
+}
+@if (Session["RolUsuario"] != null && Session["RolUsuario"].ToString() == "1")
+{
+    <div class="m-3">
+
+        <div class="d-grid gap-2 mt-3">
+            <h3> MODO ADMIN</h3>
+        </div>
+    </div>
+}
+
+
+<section class="section dashboard">
+    <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-12">
+            <div class="row">
+
+                <!-- Sales Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card sales-card">
+
+
+
+                        <div class="card-body">
+                            <h5 class="card-title">Citas </h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6> @ViewBag.CantCitas</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Sales Card -->
+                <!-- Revenue Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card revenue-card">
+
+
+                        <div class="card-body">
+                            <h5 class="card-title">Carros</h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="ri ri-car-fill"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.CantAutos</h6>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Revenue Card -->
+                <!-- Customers Card -->
+                <div class="col-xxl-4 col-xl-12">
+
+                    <div class="card info-card customers-card">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Clientes </h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@ViewBag.CantClientes</h6>
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <a class="btn btn-success">EXCEL TOTAL CITAS</a>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Seleccione una sucursal</h3>
+                            </div>
+                            <div class="card-body">
+                                @using (Html.BeginForm("docker", "Reporte", FormMethod.Get))
+                                {
+                                    <div class="form-group my-3 text-center">
+                                        @Html.Label("Seleccione una sucursal", new { @class = "my-3" })
+                                        @Html.DropDownList("idSucursal", ViewBag.Sucursales as List<SelectListItem>, new { @class = "form-control form-control-user", @required = "true" })
+                                        @Html.ValidationMessage("idSucursal", "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; flex-direction: column;">
+                                        <input type="submit" class="btn btn-primary btn-block" value="EXCEL SUCURSAL" style="margin-top: 20px; margin-bottom: 20px;">
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>CARGAR MESES POR DROPDOWN</h3>
+                            </div>
+                            <div class="card-body">
+                                @using (Html.BeginForm("docker", "Reporte", FormMethod.Get))
+                                {
+                                    <div class="form-group my-3 text-center">
+                                        @Html.Label("CARGAR MESES POR DROPDOWN", new { @class = "my-3" })
+                                        @Html.DropDownList("idSucursal", ViewBag.Sucursales as List<SelectListItem>, new { @class = "form-control form-control-user", @required = "true" })
+                                        @Html.ValidationMessage("idSucursal", "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; flex-direction: column;">
+                                        <input type="submit" class="btn btn-primary btn-block" value=" EXCEL MES" style="margin-top: 20px; margin-bottom: 20px;">
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date"/>
+                        <a class="btn btn-success">EXCEL TOTAL CITAS</a>
+                    </div>
+                </div>
+
+
+
+            </div><!-- End Right side columns -->
+    </div>
+</section>

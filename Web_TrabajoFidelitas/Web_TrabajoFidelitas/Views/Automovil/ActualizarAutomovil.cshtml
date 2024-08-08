@@ -1,0 +1,105 @@
+﻿@model Web_TrabajoFidelitas.Entidades.Automovil
+
+@{
+    ViewBag.Title = "Actualizar Automovil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a class="btn btn-primary m-2 my-4" href="@Url.Action("MostrarAutomoviles", "Automovil")"><i class="bi bi-arrow-left-circle"></i> Regresar </a>
+<div class="card shadow mb-4">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="card-body" style="margin-top: 20px;">
+                <div class="table-responsive" style="overflow-x: hidden;">
+                    <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                        <h3>Actualizar Automovil</h3>
+                        <hr />
+                        @if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }
+
+                        @using (Html.BeginForm("ActualizarAutomovil", "Automovil", FormMethod.Post, new { @class = "row g-3 needs-validation", novalidate = "novalidate" }))
+                        {
+                            @Html.HiddenFor(m => m.idAutomovil)
+
+                            <div class="form-group my-3">
+                                @Html.Label("ID del Cliente")
+                                @Html.DropDownListFor(m => m.idCliente, ViewBag.IdsClientes as List<SelectListItem>, new { @class = "form-control", @id = "clienteSelect", @required = "true" })
+                                <div class="invalid-feedback">Escoge un id del cliente respectivo</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Número de Placa")
+                                @Html.TextBoxFor(m => m.placa, new { @class = "form-control", @placeholder = "Placa", @required = "true", @maxlength = "6" })
+                                @Html.ValidationMessageFor(m => m.placa, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Ingrese los caracteres respectivos de la placa, máximo 6 caracteres</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Marca del Vehículo")
+                                @Html.TextBoxFor(m => m.marca, new { @class = "form-control", @placeholder = "Marca", @required = "true", @type = "text", @maxlength = "12" })
+                                @Html.ValidationMessageFor(m => m.marca, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Ingrese la marca del automóvil</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Modelo del Vehículo")
+                                @Html.TextBoxFor(m => m.modelo, new { @class = "form-control", @placeholder = "Modelo", @required = "true", @type = "text", @maxlength = "25" })
+                                @Html.ValidationMessageFor(m => m.modelo, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Ingrese el modelo del automóvil</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Año del Vehículo")
+                                @Html.TextBoxFor(m => m.ano, new { @class = "form-control", @placeholder = "Año", @required = "true", @type = "number", @maxlength = "4" })
+                                @Html.ValidationMessageFor(m => m.ano, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Ingrese el año del automóvil, solamente 4 dígitos</div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                @Html.Label("Estado")
+                                @Html.DropDownListFor(m => m.estado, new SelectList(new[] {
+                                    new SelectListItem { Text = "Seleccione....", Value = "null" },
+                                    new SelectListItem { Text = "Inactivo", Value = "false" },
+                                    new SelectListItem { Text = "Activo", Value = "true" }
+                                }, "Value", "Text"), new { @class = "form-control", @id = "estadoSelect" })
+                            </div>
+
+                            <div style="display: flex; align-items: center; flex-direction: column;">
+                                <input type="submit" class="btn btn-primary btn-block" value="Actualizar Automovil" style="margin-top: 20px; margin-bottom: 20px;">
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Incluir Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<!-- Incluir Select2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- Tu código JavaScript -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#clienteSelect').select2({
+            placeholder: "Seleccione un cliente",
+            allowClear: true
+        });
+
+        $('#estadoSelect').select2({
+            placeholder: "Seleccione el estado",
+            allowClear: true
+        });
+    });
+</script>

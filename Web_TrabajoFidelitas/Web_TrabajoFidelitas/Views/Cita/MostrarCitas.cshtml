@@ -1,0 +1,158 @@
+﻿@model List<Web_TrabajoFidelitas.Entidades.Citas>
+
+@{
+    ViewBag.Title = "TraerCita";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sucursal</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="col-sm-12">
+                    <div class="col-sm-12">
+
+                        @if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="sucursal">Sucursal:</label>
+                                @Html.DropDownList("sucursal", ViewBag.SucursalesNombre as List<SelectListItem>, new { @class = "form-control", @id = "sucursal" })
+                            </div>
+                            <div class="col d-flex align-items-end">
+                                <button class="btn btn-primary" onclick="filtrarCitas()">Buscar</button>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:1%; text-align:right">
+                            <a class="btn btn-primary" href="@Url.Action("NuevoCita", "Cita")"> + Agregar</a>
+                            <button class="btn btn-secondary mx-2" onclick="ordenarPorHora()">Ordenar por Hora</button>
+                            <button class="btn btn-secondary" onclick="ordenarPorNombre()">Ordenar por Nombre</button>
+                        </div>
+
+                        <table id="myDataTable" class="table table-bordered" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nombre cliente</th>
+                                    <th>Placa</th>
+                                    <th>Sucursal</th>
+                                    <th>Tipo Servicio</th>
+                                    <th>Fecha Hora</th>
+                                    <th>Comentarios</th>
+                                    <th>Estado</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.idCita</td>
+                                        <td>@item.nombreCliente</td>
+                                        <td>@item.placa</td>
+                                        <td>@item.nombreSucursal</td>
+                                        <td>@item.nombreServicio</td>
+                                        <td>@item.fechaHora</td>
+                                        <td>@item.comentarios</td>
+
+                                        @if (item.estado)
+                                        {
+                                            <td style="background-color: #ADFFAA ">Activa</td>
+                                        }
+                                        else
+                                        {
+                                            <td style="background-color: #FFAAAA ">Cancelada</td>
+                                        }
+
+                                        <td>
+                                            <div style="display:flex">
+                                                <a href="@Url.Action("EditarCita", "Cita", new { id = @item.idCita })" class="btn btn-sm btn-info mx-1"><i class="fa fa-pencil-square-o"></i></a>
+                                                <a href="@Url.Action("InactivarCita", "Cita", new { id = @item.idCita })" class="btn btn-sm btn-warning"><i class="fa fa-ban"></i></a>
+                                                <a href="@Url.Action("EliminarCita", "Cita", new { id = @item.idCita })" class="btn btn-sm btn-danger mx-1"><i class="fa fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    @using (Html.BeginForm("Calendario", "Cita", FormMethod.Get))
+                    {
+                        <div class="form-group my-3 text-center">
+                            @Html.Label("Sucursal para el calendario", new { @class = "my-3" })
+                            @Html.DropDownList("idSucursal", ViewBag.Sucursales as List<SelectListItem>, new { @class = "form-control form-control-user", @required = "true" })
+                            @Html.ValidationMessage("idSucursal", "", new { @class = "text-danger" })
+                        </div>
+
+                        <div style="display: flex; align-items: center; flex-direction: column;">
+                            <input type="submit" class="btn btn-primary btn-block" value="Consultar Calendario" style="margin-top: 20px; margin-bottom: 20px;">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- CDN de DataTables -->
+<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myDataTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/es-ES.json',
+            }
+        });
+    });
+
+    function filtrarCitas() {
+        var sucursal = $('#sucursal').val();
+
+        $('#myDataTable').DataTable().column(3).search(sucursal).draw(); // Filtrar por columna de Sucursal
+    }
+
+    function ordenarPorHora() {
+        var table = $('#myDataTable').DataTable();
+        table.order([5, 'asc']).draw(); // Ordenar por Fecha Hora (índice 5)
+    }
+
+    function ordenarPorNombre() {
+        var table = $('#myDataTable').DataTable();
+        table.order([1, 'asc']).draw(); // Ordenar por Nombre Cliente (índice 1)
+    }
+</script>
+
+<style>
+    .estado-activo {
+        background-color: #d4edda; /* Verde claro */
+    }
+
+    .estado-cancelado {
+        background-color: #f8d7da; /* Rojo claro */
+    }
+</style>

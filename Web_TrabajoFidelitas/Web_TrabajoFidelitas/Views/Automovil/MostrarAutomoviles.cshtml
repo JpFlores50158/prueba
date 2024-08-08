@@ -1,0 +1,95 @@
+﻿@model List<Web_TrabajoFidelitas.Entidades.Automovil>
+
+@{
+    ViewBag.Title = "ConsultaAutomoviles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4" style="margin-top: 86px;">
+    <div class="card-header py-3" style="display: flex; justify-content: space-between; align-items: center;">
+        <h6 class="m-0 font-weight-bold text-primary" style="text-transform: uppercase; letter-spacing: 5px; font-size: 26px;">Automoviles</h6>
+        <div>
+            <a class="btn btn-primary" href="@Url.Action("NuevoAutomovil","Automovil")"> + Agregar</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="col-sm-12">
+                    <div class="col-sm-12">
+                        @*@if (ViewBag.MsjPantalla != null)
+                        {
+                            <div class="alert alert-warning" role="alert" style="text-align:center; margin-top: 20px; margin-bottom: 20px;">
+                                @ViewBag.MsjPantalla
+                            </div>
+                        }*@
+
+                        <table id="myDataTable" class="table table-bordered" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Id Auto</th>
+                                    <th>Id Cliente</th>
+                                    <th>No. Placa</th>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Año</th>
+                                    <th>Estado</th>
+                                    @if (Session["RolUsuario"].ToString() == "1")
+                                    {
+                                        <th>Acciones</th>
+                                    }
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td style="padding: 15px;">@item.idAutomovil</td>
+                                        <td style="padding: 15px;">@item.idCliente</td>
+                                        <td style="padding: 15px;">@item.placa</td>
+                                        <td style="padding: 15px;">@item.marca</td>
+                                        <td style="padding: 15px;">@item.modelo</td>
+                                        <td style="padding: 15px;">@item.ano</td>
+
+                                        @if (item.estado)
+                                        {
+                                            <td style="padding: 15px;">Activo</td>
+                                        }
+                                        else
+                                        {
+                                            <td style="padding: 15px;">Inactivo</td>
+                                        }
+                                        @if (Session["RolUsuario"].ToString() == "1")
+                                        {
+                                            <td style="padding: 15px;">
+                                                <div style="text-align:center">
+                                                    <a href="@Url.Action("ActualizarAutomovil", "Automovil", new { id = @item.idAutomovil })" class="btn btn-sm btn-info"><i class="fa fa-pencil-square-o"></i></a>
+                                                    <a href="@Url.Action("EliminarAutomovil", "Automovil", new { id = @item.idAutomovil })" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></a>
+                                                </div>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CDN de DataTables -->
+<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myDataTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/2.0.2/i18n/es-ES.json',
+            }
+        });
+    });
+</script>
